@@ -130,7 +130,7 @@ int pintos_init(void)
 
   if (*argv != NULL)
   {
-    /* Run actions specified on kernel command line. */
+    /* Run actions specified on kernel input_buffer. */
     run_actions(argv);
   }
   else
@@ -224,6 +224,7 @@ bss_init(void)
    kernel virtual mapping, and then sets up the CPU to use the
    new page directory.  Points init_page_dir to the page
    directory it creates. */
+
 static void
 paging_init(void)
 {
