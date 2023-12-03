@@ -185,6 +185,28 @@ int pintos_init(void)
   thread_exit();
 }
 
+void read(char *input)
+{
+  char input_char;
+  int arr_len = 0;
+  input_init();
+
+  while (true)
+  {
+    input_char = input_getc();
+    if (input_char == '\r')
+    {
+      printf("\n");
+      return;
+    }
+    else
+    {
+      input[arr_len] = input_char;
+      arr_len++;
+      printf("%c", input_char);
+    }
+  }
+}
 /* Clear the "BSS", a segment that should be initialized to
    zeros.  It isn't actually stored on disk or zeroed by the
    kernel loader, so we have to zero it ourselves.
