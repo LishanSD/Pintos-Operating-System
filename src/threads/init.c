@@ -262,7 +262,7 @@ paging_init(void)
 /* Breaks the kernel command line into words and returns them as
    an argv-like array. */
 static char **
-read_command_line(void)
+read_input_buffer_line(void)
 {
   static char *argv[LOADER_ARGS_LEN / 2 + 1];
   char *p, *end;
@@ -275,7 +275,7 @@ read_command_line(void)
   for (i = 0; i < argc; i++)
   {
     if (p >= end)
-      PANIC("command line arguments overflow");
+      PANIC("input_buffer input_buffer arguments overflow");
 
     argv[i] = p;
     p += strnlen(p, end - p) + 1;
