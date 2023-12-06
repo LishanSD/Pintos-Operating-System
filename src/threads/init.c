@@ -152,21 +152,9 @@ int pintos_init(void)
     {
       shutdown_power_off();
     }
-    else if (strcmp(input_buffer, "time") == 0)
-    {
-      printf("%d seconds has passed.", timer_ticks() / TIMER_FREQ);
-    }
-    else if (strcmp(input_buffer, "ram") == 0)
-    {
-      printf("%'" PRIu32 " kB RAM available", init_ram_pages * PGSIZE / 1024);
-    }
     else if (strcmp(input_buffer, "thread") == 0)
     {
       thread_print_stats();
-    }
-    else if (strcmp(input_buffer, "priority") == 0)
-    {
-      printf("Thread priority of the current thread is %d", thread_get_priority());
     }
     else if (strcmp(input_buffer, "exit") == 0)
     {
