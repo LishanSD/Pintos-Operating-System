@@ -282,8 +282,8 @@ read_input_buffer_line(void)
   }
   argv[argc] = NULL;
 
-  /* Print kernel command line. */
-  printf("Kernel command line:");
+  /* Print kernel input_buffer input_buffer. */
+  printf("Kernel input_buffer input_buffer:");
   for (i = 0; i < argc; i++)
     if (strchr(argv[i], ' ') == NULL)
       printf(" %s", argv[i]);
@@ -418,7 +418,7 @@ run_actions(char **argv)
 static void
 usage(void)
 {
-  printf("\nCommand line syntax: [OPTION...] [ACTION...]\n"
+  printf("\ninput_buffer input_buffer syntax: [OPTION...] [ACTION...]\n"
          "Options must precede actions.\n"
          "Actions are executed in the order specified.\n"
          "\nAvailable actions:\n"
