@@ -130,44 +130,57 @@ int pintos_init(void)
 
   if (*argv != NULL)
   {
-    /* Run actions specified on kernel input_buffer. */
+    /* Run actions specified on kernel input_buffer input_buffer. */
     run_actions(argv);
   }
   else
   {
-    // TODO: no command line passed to kernel. Run interactively
-  }
-  while (true)
-  {
-    printf("CS2042> ");
-    char input_buffer[25];
-    memset(input_buffer, 0, sizeof(input_buffer));
-    read(input_buffer);
+    // TODO: no input_buffer input_buffer passed to kernel. Run interactively
+    while (true)
+    {
+      printf("CS2042> ");
+      char input_buffer[25];
+      memset(input_buffer, 0, sizeof(input_buffer));
+      read(input_buffer);
 
-    if (strcmp(input_buffer, "whoami") == 0)
-    {
-      printf("Lishan S.D. - 210339J");
-    }
-    else if (strcmp(input_buffer, "shutdown") == 0)
-    {
-      shutdown_power_off();
-    }
-    else if (strcmp(input_buffer, "thread") == 0)
-    {
-      thread_print_stats();
-    }
-    else if (strcmp(input_buffer, "exit") == 0)
-    {
-      printf("Exiting Interactive Shell... Bye!");
-      break;
-    }
-    else
-    {
-      printf("Unknown input_buffer!");
-    }
+      if (strcmp(input_buffer, "whoami") == 0)
+      {
+        printf("Lishan S.D. - 210339J");
+      }
+      else if (strcmp(input_buffer, "shutdown") == 0)
+      {
+        shutdown_power_off();
+      }
+      else if (strcmp(input_buffer, "time") == 0)
+      {
+        printf("%d seconds has passed.", timer_ticks() / TIMER_FREQ);
+      }
+      else if (strcmp(input_buffer, "ram") == 0)
+      {
+        printf("%'" PRIu32 " kB RAM available", init_ram_pages * PGSIZE / 1024);
+      }
+      else if (strcmp(input_buffer, "thread") == 0)
+      {
+        thread_print_stats();
+      }
+      else if (strcmp(input_buffer, "priority") == 0)
+      {
+        printf("Thread priority of the current thread is %d", thread_get_priority());
+      }
+      else if (strcmp(input_buffer, "exit") == 0)
+      {
+        printf("Exiting Interactive Shell... Bye!");
+        break;
+      }
+      else
+      {
+        printf("Unknown input_buffer!");
+      }
 
-    printf("\n");
+      printf("\n");
+    }
   }
+
   /* Finish up. */
   shutdown();
   thread_exit();
@@ -212,7 +225,6 @@ bss_init(void)
    kernel virtual mapping, and then sets up the CPU to use the
    new page directory.  Points init_page_dir to the page
    directory it creates. */
-
 static void
 paging_init(void)
 {
@@ -247,7 +259,7 @@ paging_init(void)
   asm volatile("movl %0, %%cr3" : : "r"(vtop(init_page_dir)));
 }
 
-/* Breaks the kernel command line into words and returns them as
+/* Breaks the kernel input_buffer input_buffer into words and returns them as
    an argv-like array. */
 static char **
 read_input_buffer_line(void)
@@ -401,7 +413,7 @@ run_actions(char **argv)
   }
 }
 
-/* Prints a kernel command line help message and powers off the
+/* Prints a kernel input_buffer input_buffer help message and powers off the
    machine. */
 static void
 usage(void)
