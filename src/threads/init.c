@@ -145,7 +145,7 @@ int pintos_init(void)
 
       if (strcmp(input_buffer, "whoami") == 0)
       {
-        printf("Lishan S.D. - 210339J");
+        printf("Name");
       }
       else if (strcmp(input_buffer, "shutdown") == 0)
       {
