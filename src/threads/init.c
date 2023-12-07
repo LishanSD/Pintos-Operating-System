@@ -80,7 +80,7 @@ int pintos_init(void)
   /* Clear BSS. */
   bss_init();
 
-  /* Break input_buffer input_buffer into arguments and parse options. */
+  /* Break input_buffer into arguments and parse options. */
   argv = read_input_buffer_line();
   argv = parse_options(argv);
 
@@ -130,12 +130,12 @@ int pintos_init(void)
 
   if (*argv != NULL)
   {
-    /* Run actions specified on kernel input_buffer input_buffer. */
+    /* Run actions specified on kernel input_buffer. */
     run_actions(argv);
   }
   else
   {
-    // TODO: no input_buffer input_buffer passed to kernel. Run interactively
+    // TODO: no input_buffer passed to kernel. Run interactively
     while (true)
     {
       printf("CS2042> ");
@@ -259,7 +259,7 @@ paging_init(void)
   asm volatile("movl %0, %%cr3" : : "r"(vtop(init_page_dir)));
 }
 
-/* Breaks the kernel input_buffer input_buffer into words and returns them as
+/* Breaks the kernel input_buffer into words and returns them as
    an argv-like array. */
 static char **
 read_input_buffer_line(void)
@@ -275,15 +275,15 @@ read_input_buffer_line(void)
   for (i = 0; i < argc; i++)
   {
     if (p >= end)
-      PANIC("input_buffer input_buffer arguments overflow");
+      PANIC("input_buffer arguments overflow");
 
     argv[i] = p;
     p += strnlen(p, end - p) + 1;
   }
   argv[argc] = NULL;
 
-  /* Print kernel input_buffer input_buffer. */
-  printf("Kernel input_buffer input_buffer:");
+  /* Print kernel input_buffer. */
+  printf("Kernel input_buffer:");
   for (i = 0; i < argc; i++)
     if (strchr(argv[i], ' ') == NULL)
       printf(" %s", argv[i]);
@@ -413,12 +413,12 @@ run_actions(char **argv)
   }
 }
 
-/* Prints a kernel input_buffer input_buffer help message and powers off the
+/* Prints a kernel input_buffer help message and powers off the
    machine. */
 static void
 usage(void)
 {
-  printf("\ninput_buffer input_buffer syntax: [OPTION...] [ACTION...]\n"
+  printf("\ninput_buffer syntax: [OPTION...] [ACTION...]\n"
          "Options must precede actions.\n"
          "Actions are executed in the order specified.\n"
          "\nAvailable actions:\n"
