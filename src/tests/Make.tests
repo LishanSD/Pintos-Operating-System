@@ -53,7 +53,7 @@ $(foreach test,$(TESTS),$(eval $(test).result: $(test).output $(test).ck))
 VERBOSE =
 
 TESTCMD = pintos -v -k -T $(TIMEOUT)
-TESTCMD += $(SIMULATOR)
+TESTCMD += qemu
 TESTCMD += $(PINTOSOPTS)
 ifeq ($(filter userprog, $(KERNEL_SUBDIRS)), userprog)
 TESTCMD += $(FILESYSSOURCE)

@@ -11,11 +11,11 @@ struct semaphore
     struct list waiters;        /* List of waiting threads. */
   };
 
-void sema_init (struct semaphore *, unsigned value);
-void sema_down (struct semaphore *);
-bool sema_try_down (struct semaphore *);
-void sema_up (struct semaphore *);
-void sema_self_test (void);
+void init (struct semaphore *, unsigned value);
+void down (struct semaphore *);
+bool try (struct semaphore *);
+void up (struct semaphore *);
+void self (void);
 
 /* Lock. */
 struct lock 
