@@ -42,7 +42,7 @@
    - up or "V": increment the value (and wake up one waiting
      thread, if any). */
 void
-init (struct semaphore *sema, unsigned value) 
+sema_init (struct semaphore *sema, unsigned value) 
 {
   ASSERT (sema != NULL);
 
@@ -58,7 +58,7 @@ init (struct semaphore *sema, unsigned value)
    interrupts disabled, but if it sleeps then the next scheduled
    thread will probably turn interrupts back on. */
 void
-down (struct semaphore *sema) 
+sema_down (struct semaphore *sema) 
 {
   enum intr_level old_level;
 
@@ -81,7 +81,7 @@ down (struct semaphore *sema)
 
    This function may be called from an interrupt handler. */
 bool
-try (struct semaphore *sema) 
+sema_try_down (struct semaphore *sema) 
 {
   enum intr_level old_level;
   bool success;
@@ -106,7 +106,7 @@ try (struct semaphore *sema)
 
    This function may be called from an interrupt handler. */
 void
-up (struct semaphore *sema) 
+sema_up (struct semaphore *sema) 
 {
   enum intr_level old_level;
 
@@ -126,24 +126,24 @@ static void sema_test_helper (void *sema_);
    between a pair of threads.  Insert calls to printf() to see
    what's going on. */
 void
-self (void) 
+sema_self_test (void) 
 {
   struct semaphore sema[2];
   int i;
 
   printf ("Testing semaphores...");
-  init (&sema[0], 0);
-  init (&sema[1], 0);
+  sema_init (&sema[0], 0);
+  sema_init (&sema[1], 0);
   thread_create ("sema-test", PRI_DEFAULT, sema_test_helper, &sema);
   for (i = 0; i < 10; i++) 
     {
-      up (&sema[0]);
-      down (&sema[1]);
+      sema_up (&sema[0]);
+      sema_down (&sema[1]);
     }
   printf ("done.\n");
 }
 
-/* Thread function used by self(). */
+/* Thread function used by sema_self_test(). */
 static void
 sema_test_helper (void *sema_) 
 {
@@ -152,8 +152,8 @@ sema_test_helper (void *sema_)
 
   for (i = 0; i < 10; i++) 
     {
-      down (&sema[0]);
-      up (&sema[1]);
+      sema_down (&sema[0]);
+      sema_up (&sema[1]);
     }
 }
 
@@ -178,7 +178,7 @@ lock_init (struct lock *lock)
   ASSERT (lock != NULL);
 
   lock->holder = NULL;
-  init (&lock->semaphore, 1);
+  sema_init (&lock->semaphore, 1);
 }
 
 /* Acquires LOCK, sleeping until it becomes available if
@@ -196,7 +196,7 @@ lock_acquire (struct lock *lock)
   ASSERT (!intr_context ());
   ASSERT (!lock_held_by_current_thread (lock));
 
-  down (&lock->semaphore);
+  sema_down (&lock->semaphore);
   lock->holder = thread_current ();
 }
 
@@ -214,7 +214,7 @@ lock_try_acquire (struct lock *lock)
   ASSERT (lock != NULL);
   ASSERT (!lock_held_by_current_thread (lock));
 
-  success = try (&lock->semaphore);
+  success = sema_try_down (&lock->semaphore);
   if (success)
     lock->holder = thread_current ();
   return success;
@@ -232,7 +232,7 @@ lock_release (struct lock *lock)
   ASSERT (lock_held_by_current_thread (lock));
 
   lock->holder = NULL;
-  up (&lock->semaphore);
+  sema_up (&lock->semaphore);
 }
 
 /* Returns true if the current thread holds LOCK, false
@@ -294,10 +294,10 @@ cond_wait (struct condition *cond, struct lock *lock)
   ASSERT (!intr_context ());
   ASSERT (lock_held_by_current_thread (lock));
   
-  init (&waiter.semaphore, 0);
+  sema_init (&waiter.semaphore, 0);
   list_push_back (&cond->waiters, &waiter.elem);
   lock_release (lock);
-  down (&waiter.semaphore);
+  sema_down (&waiter.semaphore);
   lock_acquire (lock);
 }
 
@@ -317,7 +317,7 @@ cond_signal (struct condition *cond, struct lock *lock UNUSED)
   ASSERT (lock_held_by_current_thread (lock));
 
   if (!list_empty (&cond->waiters)) 
-    up (&list_entry (list_pop_front (&cond->waiters),
+    sema_up (&list_entry (list_pop_front (&cond->waiters),
                           struct semaphore_elem, elem)->semaphore);
 }
 

@@ -2,41 +2,14 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include "userprog/gdt.h"
-#include "userprog/pagedir.h"
-#include "threads/vaddr.h"
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 
 /* Number of page faults processed. */
-static long long count;
+static long long page_fault_cnt;
 
 static void kill (struct intr_frame *);
 static void page_fault (struct intr_frame *);
-
-void validate(const void *_ptr);
-
-void validate(const void *_ptr)
-{
-  struct thread *cur;
-  cur = thread_current();
-
-  if (_ptr == NULL)
-  {
-    // obviusly shouldnt be a null pointer
-    thread_exit();
-  }
-  if (is_kernel_vaddr(_ptr))
-  {
-    // shouldn't be in kernel address space
-    // NOTE: this should be called before pagedir_get_page to prevent an assertion error
-    thread_exit();
-  }
-  if (pagedir_get_page(cur->pagedir, _ptr) == NULL)
-  {
-    // address should be mapped
-    thread_exit();
-  }
-}
 
 /* Registers handlers for interrupts that can be caused by user
    programs.
@@ -91,7 +64,7 @@ exception_init (void)
 void
 exception_print_stats (void) 
 {
-  printf ("Exception: %lld page faults\n", count);
+  printf ("Exception: %lld page faults\n", page_fault_cnt);
 }
 
 /* Handler for an exception (probably) caused by a user process. */
@@ -163,14 +136,12 @@ page_fault (struct intr_frame *f)
      (#PF)". */
   asm ("movl %%cr2, %0" : "=r" (fault_addr));
 
-  validate(fault_addr);
-
   /* Turn interrupts back on (they were only off so that we could
      be assured of reading CR2 before it changed). */
   intr_enable ();
 
   /* Count page faults. */
-  count++;
+  page_fault_cnt++;
 
   /* Determine cause. */
   not_present = (f->error_code & PF_P) == 0;
